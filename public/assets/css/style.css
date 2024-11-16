@@ -10020,3 +10020,9 @@ footer .nav-link {
   content: '';
 }
 /* '' */
+
+/* Custom css */
+
+.page-item .page-link{
+  font-size: 1rem !important;
+}
