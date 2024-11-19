@@ -81,22 +81,22 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="description" class="mb-2">Description<span class="req">*</span></label>
-                                    <textarea class="form-control" name="description" id="description" cols="5" rows="5"
+                                    <textarea class="form-control editor" name="description" id="description" cols="5" rows="5"
                                         placeholder="Description"></textarea>
                                     <p class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="benefits" class="mb-2">Benefits</label>
-                                    <textarea class="form-control" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits" value="{{ old('benefits') }}"></textarea>
+                                    <textarea class="form-control editor" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits" value="{{ old('benefits') }}"></textarea>
                                 </div>
                                 <div class="mb-4">
                                     <label for="responsibility" class="mb-2">Responsibility</label>
-                                    <textarea class="form-control" name="responsibility" id="responsibility" cols="5" rows="5"
+                                    <textarea class="form-control editor" name="responsibility" id="responsibility" cols="5" rows="5"
                                         placeholder="Responsibility" value="{{ old('responsibility') }}"></textarea>
                                 </div>
                                 <div class="mb-4">
                                     <label for="qualifications" class="mb-2">Qualifications</label>
-                                    <textarea class="form-control" name="qualifications" id="qualifications" cols="5" rows="5"
+                                    <textarea class="form-control editor" name="qualifications" id="qualifications" cols="5" rows="5"
                                         placeholder="Qualifications" value="{{ old('qualifications') }}"></textarea>
                                 </div>
                                 <div class="row">
@@ -105,16 +105,16 @@
                                                 class="req">*</span></label>
                                         <select class="form-select" name="experience" id="experience">
                                             <option value="">Select Your Experience</option>
-                                            <option value="1 Year">1 Year</option>
-                                            <option value="2 Year">2 Year</option>
-                                            <option value="3 Year">3 Year</option>
-                                            <option value="4 Year">4 Year</option>
-                                            <option value="5 Year">5 Year</option>
-                                            <option value="6 Year">6 Year</option>
-                                            <option value="7 Year">7 Year</option>
-                                            <option value="8 Year">8 Year</option>
-                                            <option value="9 Year">9 Year</option>
-                                            <option value="10+ Year">10+ Plus</option>
+                                            <option value="1">1 Year</option>
+                                            <option value="2">2 Year</option>
+                                            <option value="3">3 Year</option>
+                                            <option value="4">4 Year</option>
+                                            <option value="5">5 Year</option>
+                                            <option value="6">6 Year</option>
+                                            <option value="7">7 Year</option>
+                                            <option value="8">8 Year</option>
+                                            <option value="9">9 Year</option>
+                                            <option value="10">10+ Plus</option>
                                         </select>
                                         <p class="text-danger"></p>
                                     </div>
@@ -196,4 +196,5 @@
             });
         });
     </script>
+
 @endpush

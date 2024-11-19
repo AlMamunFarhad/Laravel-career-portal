@@ -21,4 +21,9 @@ class Job extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function applicationsCount()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
 }

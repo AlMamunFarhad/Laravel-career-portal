@@ -6,6 +6,7 @@ use App\Models\Job;
 use App\Models\User;
 use App\Models\JobType;
 use App\Models\Category;
+use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -95,10 +96,7 @@ class AccountController extends Controller
 
     public function updateProfile(Request $request)
     {
-
         $user_id = Auth::user()->id;
-
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:4|max:30',
         ]);
@@ -246,25 +244,24 @@ class AccountController extends Controller
 
     public function myJob()
     {
-        $postJobId = Job::where('user_id', Auth::user()->id)->with('jobType')->paginate(5);
+        $postJobId = Job::where('user_id', Auth::user()->id)->orderByDesc('created_at')->with('jobType')->paginate(5);
         return view('front_page.account.job.my-jobs', ['postId' => $postJobId]);
     }
 
-    public function editJob(Request $request, string $id)
+    public function editJob(string $id)
     {
         $categories = Category::where('status', 1)->orderBy('name')->get();
         $jobTypes = JobType::where('status', 1)->get();
 
-         
+
         $editJob = Job::where([
             'user_id' => Auth::user()->id,
             'id' => $id,
         ])->first();
 
-      if($editJob == null){
-        abort(404);
-      }
-
+        if ($editJob == null) {
+            abort(404);
+        }
         return view('front_page.account.job.update_job', [
             'categories' => $categories,
             'jobTypes' => $jobTypes,
@@ -286,13 +283,8 @@ class AccountController extends Controller
         ];
 
         $validator = validator::make($request->all(), $rules);
-
-       $updateJob =  Job::find($id);
-          
-
-
+        $updateJob =  Job::find($id);
         if ($validator->passes()) {
-
             $updateJob->update([
                 'user_id' => Auth::user()->id,
                 'title' => $request->title,
@@ -326,4 +318,56 @@ class AccountController extends Controller
             ]);
         }
     }
+
+    public function deleteJob(Request $request)
+    {
+        $job = Job::where([
+           'user_id' => Auth::user()->id,
+           'id' => $request->job_id
+        ])->first();
+
+        if ($job == null) {
+            session()->flash('error', 'The job was not found.');
+            return response()->json([
+             'status' => true
+            ]);
+        }
+
+        Job::where('id', $request->job_id)->delete();
+        session()->flash('success', 'Job deleted Successfully.');
+        return response()->json([
+             'status' => true
+        ]);
+    }
+
+    //***  Display Applied Job page  
+  public function appliedJob()
+  {
+    $appliedJobs = JobApplication::where('user_id', Auth::user()->id)->with(['job', 'job.jobType', 'job.applicationsCount'])->paginate(6);
+    return view('front_page.account.job.appliedJob', [
+        'appliedJobs' =>  $appliedJobs
+    ]);
+ }
+
+    //*** Remove Applied Job   
+    public function removeJob(Request $request)
+    {
+        $removeJob = JobApplication::where(['id' => $request->id, 'user_id' => Auth::user()->id])->first();
+
+
+        if ($removeJob == null) {
+            session()->flash('error','The Job application is not found.');
+            return response()->json([
+               'status' => false
+            ]);
+        }
+     
+       JobApplication::find($request->id)->delete();
+       session()->flash('success','The application has been removed.');
+       return response()->json([
+              'status' => true
+        ]);
+    }
+
+
 }

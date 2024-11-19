@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('assets/css/style.css')}}" />
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
+
 </head>
 <body data-instant-intensity="mousedown">
 <header>
@@ -27,7 +28,7 @@
 						<a class="nav-link" aria-current="page" href="{{ route('home') }}">Home</a>
 					</li>	
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="jobs.html">Find Jobs</a>
+						<a class="nav-link" aria-current="page" href="{{ route('jobs') }}">Find Jobs</a>
 					</li>										
 				</ul>
 				@if (!Auth::check())
@@ -41,7 +42,6 @@
 		</div>
 	</nav>
 </header>
-
 @yield('main')
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -73,12 +73,12 @@
     <p class="text-center text-white pt-3 fw-bold fs-6">© 2023 xyz company, all right reserved</p>
 </div>
 </footer> 
+
 <script src="{{asset('assets/js/jquery-3.6.0.min.js')}}"></script>
 <script src="{{asset('assets/js/bootstrap.bundle.5.1.3.min.js')}}"></script>
 <script src="{{asset('assets/js/instantpages.5.1.0.min.js')}}"></script>
 <script src="{{asset('assets/js/lazyload.17.6.0.min.js')}}"></script>
 <script src="{{asset('assets/js/custom.js')}}"></script>
-
 <script>
     $.ajaxSetup({
          headers: {
@@ -110,7 +110,10 @@
 		 }
 		});
 	})
+
+
 </script>
+
 
 @stack("scripts")
 
