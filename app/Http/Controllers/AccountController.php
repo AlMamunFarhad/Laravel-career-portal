@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\JobType;
 use App\Models\Category;
 use App\Models\JobApplication;
+use App\Models\SavedJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -32,8 +33,8 @@ class AccountController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:4|same:confirm_password',
-            'confirm_password' => 'required'
+            'password' => 'required|min:4',
+            'confirm_password' => 'required|same:confirm_password'
         ]);
 
 
@@ -97,9 +98,9 @@ class AccountController extends Controller
     public function updateProfile(Request $request)
     {
         $user_id = Auth::user()->id;
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:4|max:30',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required|min:4|max:30',
+        // ]);
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:4|max:30',
             'email' => 'required|email|unique:users,email,' . $user_id . ',id',
@@ -155,7 +156,7 @@ class AccountController extends Controller
             $image = $manager->read($sourcePath);
 
             // crop the best fitting 1:1 ratio (200x200) and resize to 200x200 pixel
-            $image->cover(150, 150);
+            $image->cover(200, 200);
             $image->toPng()->save(public_path('/profile_img/thumb/' . $imageName));
 
             // Delete old picture 
@@ -253,7 +254,6 @@ class AccountController extends Controller
         $categories = Category::where('status', 1)->orderBy('name')->get();
         $jobTypes = JobType::where('status', 1)->get();
 
-
         $editJob = Job::where([
             'user_id' => Auth::user()->id,
             'id' => $id,
@@ -318,56 +318,113 @@ class AccountController extends Controller
             ]);
         }
     }
-
     public function deleteJob(Request $request)
     {
         $job = Job::where([
-           'user_id' => Auth::user()->id,
-           'id' => $request->job_id
+            'user_id' => Auth::user()->id,
+            'id' => $request->job_id
         ])->first();
 
         if ($job == null) {
             session()->flash('error', 'The job was not found.');
             return response()->json([
-             'status' => true
+                'status' => true
             ]);
         }
 
         Job::where('id', $request->job_id)->delete();
         session()->flash('success', 'Job deleted Successfully.');
         return response()->json([
-             'status' => true
+            'status' => true
         ]);
     }
 
     //***  Display Applied Job page  
-  public function appliedJob()
-  {
-    $appliedJobs = JobApplication::where('user_id', Auth::user()->id)->with(['job', 'job.jobType', 'job.applicationsCount'])->paginate(6);
-    return view('front_page.account.job.appliedJob', [
-        'appliedJobs' =>  $appliedJobs
-    ]);
- }
-
+    public function appliedJob()
+    {
+        $appliedJobs = JobApplication::where('user_id', Auth::user()->id)->with(['job', 'job.jobType', 'job.applicationsCount'])->paginate(6);
+        return view('front_page.account.job.appliedJob', [
+            'appliedJobs' =>  $appliedJobs
+        ]);
+    }
     //*** Remove Applied Job   
     public function removeJob(Request $request)
     {
         $removeJob = JobApplication::where(['id' => $request->id, 'user_id' => Auth::user()->id])->first();
 
-
         if ($removeJob == null) {
-            session()->flash('error','The Job application is not found.');
+            session()->flash('error', 'The Job application is not found.');
             return response()->json([
-               'status' => false
+                'status' => false
             ]);
         }
-     
-       JobApplication::find($request->id)->delete();
-       session()->flash('success','The application has been removed.');
-       return response()->json([
-              'status' => true
+
+        JobApplication::find($request->id)->delete();
+        session()->flash('success', 'The application has been removed.');
+        return response()->json([
+            'status' => true
+        ]);
+    }
+    public function savedJobs()
+    {
+        $savedJobs = SavedJob::where([
+            'user_id' => Auth::user()->id,
+
+        ])->with(['job', 'job.jobType', 'job.applicationsCount'])->orderByDesc('created_at')->paginate(6);
+
+        return view('front_page.account.job.savedJobs', [
+            'savedJobs' =>  $savedJobs
         ]);
     }
 
+    public function removeSavedJob(Request $request)
+    {
+        $removeSaveJob = SavedJob::where([
+            'user_id' => Auth::user()->id,
+            'id' => $request->id,
+        ])->first();
 
+        if ($removeSaveJob == null) {
+            session()->flash('error', 'Saved job is not Found.');
+            return response()->json([
+                'status' => false
+            ]);
+        }
+
+        SavedJob::find($request->id)->delete();
+        session()->flash('success', 'Your saved job deleted successfully.');
+        return response()->json([
+            'status' => true
+        ]);
+    }
+    public function updatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+           'old_password' => 'required', 
+           'new_password' => 'required|min:4', 
+           'confirm_password' => 'required|same:new_password', 
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+              'status' => false,
+              'errors' => $validator->errors()
+            ]);
+        }
+
+        if(Hash::check($request->old_password, Auth::user()->password) == false){
+            session()->flash('error', 'Your old password is incorrect.');
+            return response()->json([
+               'status' => true,
+            ]);
+        }
+
+        $user = User::find(Auth::user()->id);
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+        session()->flash('success', 'Password updated successfylly.');
+        return response()->json([
+              'status' => true
+        ]);
+    }
 }

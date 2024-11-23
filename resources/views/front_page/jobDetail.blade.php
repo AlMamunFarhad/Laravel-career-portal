@@ -40,8 +40,9 @@
                                 </div>
                                 <div class="jobs_right">
                                     <div class="apply_now">
-                                        <a class="heart_mark" href="#"> <i class="fa fa-heart-o"
-                                                aria-hidden="true"></i></a>
+                                        <a class="heart_mark {{ $count == 1 ? 'saved-job' : '' }}"
+                                            href="javascript:void(0);" onclick="saveJob({{ $job->id }})"> <i
+                                                class="fa fa-heart-o" aria-hidden="true"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -71,16 +72,59 @@
                             @endif
                             <div class="border-bottom"></div>
                             <div class="pt-3 text-end">
-                                <a href="#" class="btn btn-secondary">Save</a>
                                 @if (Auth::check())
-                                <a href="#" onclick="applyJob({{ $job->id }})" class="btn btn-primary" type="submit">Apply</a>
+                                    <a href="#" onclick="saveJob({{ $job->id }});"
+                                        class="btn btn-secondary">Save</a>
                                 @else
-                                <a href="javascript:void(0);" class="btn btn-primary disabled">Login to Apply</a>
+                                    <a href="javascript:void(0);" class="btn btn-secondary disabled">Login to Save</a>
                                 @endif
-                               
+
+                                @if (Auth::check())
+                                    <a href="#" onclick="applyJob({{ $job->id }});" class="btn btn-primary"
+                                        type="submit">Apply</a>
+                                @else
+                                    <a href="javascript:void(0);" class="btn btn-primary disabled">Login to Apply</a>
+                                @endif
+
                             </div>
                         </div>
                     </div>
+                    {{-- Applicants Card --}}
+                    @if (Auth::user())
+                        @if (Auth::user()->id == $job->user_id)
+                          @if ($appliedUsers->isNotEmpty())
+                            <div class="card shadow border-0 mt-4">
+                                <div class="job_details_header">
+                                    <div class="single_jobs white-bg d-flex justify-content-between">
+                                        <div class="jobs_left d-flex align-items-center">
+                                            <div class="jobs_conetent">
+                                                <h4>Applicants</h4>
+                                            </div>
+                                        </div>
+                                        <div class="jobs_right"></div>
+                                    </div>
+                                </div>
+                                <div class="descript_wrap white-bg">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Applied Date</th>
+                                        </tr>                                 
+                                            @foreach ($appliedUsers as $appliedUser)
+                                                <tr>
+                                                    <td>{{ $appliedUser->user->name }}</td>
+                                                    <td>{{ $appliedUser->user->email }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($appliedUser->applied_date)->format('d M, Y') }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+                    @endif
                 </div>
                 <div class="col-md-4">
                     <div class="card shadow border-0">
@@ -91,7 +135,8 @@
                             <div class="job_content pt-3">
                                 <ul>
                                     <li>Published on:
-                                        <span>{{ \Carbon\Carbon::parse($job->created_at)->format('d M, Y') }}</span></li>
+                                        <span>{{ \Carbon\Carbon::parse($job->created_at)->format('d M, Y') }}</span>
+                                    </li>
                                     <li>Vacancy: <span>{{ $job->vacancy }}</span></li>
                                     <li>Salary: <span>{{ $job->salary }}</span></li>
                                     <li>Location: <span>{{ $job->location }}</span></li>
@@ -108,15 +153,15 @@
                             <div class="job_content pt-3">
                                 <ul>
                                     @if (!empty($job->company_name))
-                                    <li>Name: <span>{{ $job->company_name }}</span></li>
+                                        <li>Name: <span>{{ $job->company_name }}</span></li>
                                     @endif
                                     @if (!empty($job->company_location))
-                                    <li>Location: <span>{{ $job->company_location }}</span></li>
+                                        <li>Location: <span>{{ $job->company_location }}</span></li>
                                     @endif
                                     @if (!empty($job->company_website))
-                                    <li>Website: <span><a
-                                                href="{{ $job->company_website }}">{{ $job->company_website }}</a></span>
-                                    </li>
+                                        <li>Website: <span><a
+                                                    href="{{ $job->company_website }}">{{ $job->company_website }}</a></span>
+                                        </li>
                                     @endif
                                 </ul>
                             </div>
@@ -130,19 +175,34 @@
 
 @push('scripts')
     <script type="text/javascript">
-        function applyJob(id){
-            if(confirm("Are you sure you want to apply on this job?")){
+        function applyJob(id) {
+            if (confirm('Are you sure you want to apply on this job?')) {
                 $.ajax({
-                   url: '{{ route("applyJob") }}',
-                   type: "post",
-                   data: {id:id},
-                   dataType: 'json',
-                   success: function(response){
-                    //  window.location.href = {{ url()->current() }};
-                     window.location.reload();
-                   }
+                    url: '{{ route('applyJob') }}',
+                    type: "post",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        window.location.href = '{{ url()->current() }}';
+                    }
                 });
             }
+        }
+
+        function saveJob(id) {
+            $.ajax({
+                url: '{{ route('saveJob') }}',
+                type: "post",
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    window.location.href = '{{ url()->current() }}';
+                }
+            });
         }
     </script>
 @endpush

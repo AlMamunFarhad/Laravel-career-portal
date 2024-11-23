@@ -19,12 +19,7 @@
                     @include('front_page.account.sidebar')
                 </div>
                 <div class="col-lg-9">
-                    @if (Session::has('success'))
-                    <div class="alert alert-success alert-dismissible">
-                        {{ Session::get('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    @endif
+                    @include('front_page.userMessages')
                     <form action="" id="profileForm" class="profileForm" method="POST">
                         <div class="card border-0 shadow mb-4">
                             <div class="card-body  p-4">
@@ -58,24 +53,29 @@
                         </div>
                     </form>
                     <div class="card border-0 shadow mb-4">
+                        <form action="" method="POST" name="changePasswordForm" id="changePasswordForm">
                         <div class="card-body p-4">
                             <h3 class="fs-4 mb-1">Change Password</h3>
                             <div class="mb-4">
                                 <label for="" class="mb-2">Old Password*</label>
-                                <input type="password" placeholder="Old Password" class="form-control">
+                                <input type="password" name="old_password" id="old_password" placeholder="Old Password" class="form-control">
+                                <p></p>
                             </div>
                             <div class="mb-4">
                                 <label for="" class="mb-2">New Password*</label>
-                                <input type="password" placeholder="New Password" class="form-control">
+                                <input type="password" name="new_password" id="new_password" placeholder="New Password" class="form-control">
+                                <p></p>
                             </div>
                             <div class="mb-4">
                                 <label for="" class="mb-2">Confirm Password*</label>
-                                <input type="password" placeholder="Confirm Password" class="form-control">
+                                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control">
+                                <p></p>
                             </div>
                         </div>
                         <div class="card-footer  p-4">
-                            <button type="button" class="btn btn-primary">Update</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
+                    </form>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: '{{ route('account.updateProfile') }}',
+                url: '{{ route("account.updateProfile") }}',
                 type: 'put',
                 dataType: 'json',
                 data: $("#profileForm").serializeArray(),
@@ -97,6 +97,39 @@
 
                     let errors = response.errors;
                     let fields = ["name", "email"];
+                    let hasError = false;
+
+                    fields.forEach(field => {
+                        if (response.status === false && errors[field]) {
+                            $("#" + field).addClass('is-invalid')
+                                .siblings('p').addClass('invalid-feedback').html(errors[field]);
+                            hasError = true;
+                        } else {
+                            $("#" + field).removeClass('is-invalid')
+                                .siblings('p').removeClass('invalid-feedback').html('');
+                        }
+                    });
+
+                    if (!hasError) {
+                        window.location.href = "{{ route('account.profile') }}";
+                    }
+                }
+
+            });
+        });
+
+        $("#changePasswordForm").submit(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '{{ route("account.updatePassword") }}',
+                type: 'post',
+                dataType: 'json',
+                data: $("#changePasswordForm").serializeArray(),
+                success: function(response) {
+
+                    let errors = response.errors;
+                    let fields = ["old_password", "new_password", "confirm_password"];
                     let hasError = false;
 
                     fields.forEach(field => {

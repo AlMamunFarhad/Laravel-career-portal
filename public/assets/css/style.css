@@ -10026,3 +10026,8 @@ footer .nav-link {
 .page-item .page-link{
   font-size: 1rem !important;
 }
+
+.saved-job {
+  background: #00D363 !important;
+  color: #fff !important;
+}

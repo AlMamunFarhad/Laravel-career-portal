@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\JobNotification;
 use App\Models\Job;
 use App\Models\User;
 use App\Models\JobType;
 use App\Models\Category;
+use App\Models\SavedJob;
 use Illuminate\Http\Request;
+use App\Mail\JobNotification;
 use App\Models\JobApplication;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -53,8 +54,6 @@ class JobController extends Controller
             $jobs = $jobs->orderBy('created_at', 'DESC');
         }
 
-        // $jobs = $jobs->orderBy('created_at', 'DESC');
-
         $jobs = $jobs->with(['jobType', 'category'])->paginate(6);
 
         return view('front_page.jobs', [
@@ -64,7 +63,6 @@ class JobController extends Controller
             'jobTypeArray' => $jobTypeArray
         ]);
     }
-
     public function jobDetail($id)
     {
         $job = Job::where([
@@ -75,8 +73,21 @@ class JobController extends Controller
         if ($job == null) {
             abort(404);
         }
+
+        $count = 0;
+        if (Auth::user()) {
+            $count = SavedJob::where([
+                'user_id' => Auth::user()->id,
+                'job_id' => $id
+            ])->count();
+        }
+
+        $appliedUsers = JobApplication::where('job_id', $id)->with('user')->get();
+
         return view('front_page.jobDetail', [
-            'job' => $job
+            'job' => $job,
+            'count' => $count,
+            'appliedUsers' => $appliedUsers,
         ]);
     }
 
@@ -93,7 +104,7 @@ class JobController extends Controller
                 'message' => 'Job does not exist.',
             ]);
         }
-        
+
         //** You can not apply on your own job
         $employerId = $job->user_id;
         if ($employerId == Auth::user()->id) {
@@ -128,9 +139,9 @@ class JobController extends Controller
         // Sending Email Method
         $employer = User::where('id', $employerId)->first();
         $mailData = [
-          'employer' => $employer,
-          'user' => Auth::user(),
-          'job' => $job,
+            'employer' => $employer,
+            'user' => Auth::user(),
+            'job' => $job,
         ];
         Mail::to($employer->email)->send(new JobNotification($mailData));
 
@@ -143,5 +154,39 @@ class JobController extends Controller
         ]);
     }
 
+    public function saveJob(Request $request)
+    {
+        $id = $request->id;
 
+        $job = Job::find($id);
+
+        if ($job == null) {
+            session()->flash('error', 'Job is not found.');
+            return response()->json([
+                'status' => false
+            ]);
+        }
+
+        $count = SavedJob::where([
+            'user_id' => Auth::user()->id,
+            'job_id' => $id
+        ])->count();
+
+        if ($count > 0) {
+            session()->flash('error', 'You already saved on this job.');
+            return response()->json([
+                'status' => false
+            ]);
+        }
+
+        $saveJob = SavedJob::create([
+            'user_id' => Auth::user()->id,
+            'job_id' => $id,
+        ]);
+
+        session()->flash('success', 'You have successfully saved the job.');
+        return response()->json([
+            'status' => true
+        ]);
+    }
 }
