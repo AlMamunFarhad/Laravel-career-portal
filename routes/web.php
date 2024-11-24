@@ -7,12 +7,17 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\JobsController;
+use App\Http\Controllers\admin\JobApplicationsController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
 Route::get('/job/detail/{id}', [JobController::class, 'jobDetail'])->name('jobDetail');
 Route::post('/apply-job', [JobController::class, 'applyJob'])->name('applyJob');
 Route::post('/save-job', [JobController::class, 'saveJob'])->name('saveJob');
+Route::get('/forgot/password', [AccountController::class, 'forgotPassword'])->name('account.forgotPassword');
+Route::post('/process/forgot/password', [AccountController::class, 'processForgotPassword'])->name('account.processForgotPassword');
+Route::get('/reset/password/{token}', [AccountController::class, 'resetPassword'])->name('account.resetPassword');
+Route::post('/process/reset/password', [AccountController::class, 'processResetPassword'])->name('account.processResetPassword');
 
 
 Route::group(['prefix' => 'admin', 'middleware' => 'checkRole'], function(){
@@ -21,7 +26,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkRole'], function(){
     Route::get('/edit/user/{id}', [UserController::class, 'edit'])->name('admin.user.edit');
     Route::put('/update-user/{id}', [UserController::class, 'update'])->name('admin.user.update');
     Route::delete('/delete-user/{id}', [UserController::class, 'destroy'])->name('admin.user.delete');
-    Route::get('/jobs', [jobsController::class, 'index'])->name('admin.jobs');
+    Route::get('/jobs', [JobsController::class, 'index'])->name('admin.jobs');
+    Route::post('/job-delete', [JobsController::class, 'destroy'])->name('admin.job.delete');
+    Route::get('/edit/job/{id}', [JobsController::class, 'edit'])->name('admin.job.edit');
+    Route::put('/update/job/{id}', [JobsController::class, 'update'])->name('admin.job.update');
+    Route::get('/applications', [JobApplicationsController::class, 'index'])->name('admin.job.applications');
+    Route::delete('/delete/applications', [JobApplicationsController::class, 'delete'])->name('admin.delete.applications');
 });
 
 Route::group(['prefix' => 'account'], function () {

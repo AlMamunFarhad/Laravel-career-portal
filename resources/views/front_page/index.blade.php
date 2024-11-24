@@ -37,7 +37,6 @@
                                 @endif
                             </select>
                         </div>
-
                         <div class=" col-md-3 mb-xs-3 mb-sm-3 mb-lg-0">
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary btn-block">Search</button>

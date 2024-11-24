@@ -6,12 +6,16 @@ use App\Models\Job;
 use App\Models\User;
 use App\Models\JobType;
 use App\Models\Category;
-use App\Models\JobApplication;
 use App\Models\SavedJob;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\JobApplication;
+use App\Mail\ResetPasswordEmail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -365,6 +369,7 @@ class AccountController extends Controller
             'status' => true
         ]);
     }
+    //*** Seved Job Method  
     public function savedJobs()
     {
         $savedJobs = SavedJob::where([
@@ -376,7 +381,7 @@ class AccountController extends Controller
             'savedJobs' =>  $savedJobs
         ]);
     }
-
+    //*** Seved remove Job Method  
     public function removeSavedJob(Request $request)
     {
         $removeSaveJob = SavedJob::where([
@@ -397,25 +402,26 @@ class AccountController extends Controller
             'status' => true
         ]);
     }
+    //*** Update Password Method  
     public function updatePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-           'old_password' => 'required', 
-           'new_password' => 'required|min:4', 
-           'confirm_password' => 'required|same:new_password', 
+            'old_password' => 'required',
+            'new_password' => 'required|min:4',
+            'confirm_password' => 'required|same:new_password',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-              'status' => false,
-              'errors' => $validator->errors()
+                'status' => false,
+                'errors' => $validator->errors()
             ]);
         }
 
-        if(Hash::check($request->old_password, Auth::user()->password) == false){
+        if (Hash::check($request->old_password, Auth::user()->password) == false) {
             session()->flash('error', 'Your old password is incorrect.');
             return response()->json([
-               'status' => true,
+                'status' => true,
             ]);
         }
 
@@ -424,7 +430,81 @@ class AccountController extends Controller
         $user->save();
         session()->flash('success', 'Password updated successfylly.');
         return response()->json([
-              'status' => true
+            'status' => true
         ]);
+    }
+    //*** Show Forgot Password  
+    public function forgotPassword()
+    {
+        return view('front_page.account.forgotPassword');
+    }
+
+    public function processForgotPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('account.forgotPassword')->withInput()->withErrors($validator);
+        }
+
+        $token = Str::random(50);
+
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        DB::table('password_reset_tokens')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now(),
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        $mailInfo = [
+            'token' => $token,
+            'user' => $user,
+            'subject' => 'You have requested to change your password',
+        ];
+
+        Mail::to($request->email)->send(new ResetPasswordEmail($mailInfo));
+
+        return redirect()->route('account.forgotPassword')->with('success', 'Reset password email has been sent to your inbox.');
+    }
+
+    public function resetPassword($tokenString)
+    {
+        $token = DB::table('password_reset_tokens')->where('token', $tokenString)->first();
+
+        if ($token == null) {
+            return redirect()->route('account.forgotPassword')->with('error', 'Invalid token please try again.');
+        }
+
+        return view('front_page.account.resetPassword', [
+            'tokenString' => $tokenString
+        ]);
+    }
+
+    public function processResetPassword(Request $request)
+    {
+        $token = DB::table('password_reset_tokens')->where('token', $request->token)->first();
+
+        if ($token == null) {
+            return redirect()->route('account.forgotPassword')->with('error', 'Invalid token please try again.');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'new_password' => 'required|min:4',
+            'confirm_password' => 'required|same:new_password',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('account.resetPassword', $request->token)->withErrors($validator);
+        }
+
+        User::where('email', $token->email)->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return redirect()->route('account.login')->with('success', 'You have successfylly changed your password.');
     }
 }
