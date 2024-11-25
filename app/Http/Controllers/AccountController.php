@@ -20,8 +20,6 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
 
-
-
 class AccountController extends Controller
 {
     // This method will show ragitration Page

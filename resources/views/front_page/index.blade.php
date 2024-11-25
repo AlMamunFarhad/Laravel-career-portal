@@ -81,7 +81,7 @@
                                             <div class="card-body">
                                                 <h3 class="border-0 fs-5 pb-2 mb-0">{{ $featuredJob->title }}</h3>
                                                 <p class="mb-0">{{ $featuredJob->company_name }}</p>
-                                                <p>{!! Str::words(strip_tags($featuredJob->description), 5) !!}</p>
+                                                <p>{!! Str::words(strip_tags($featuredJob->description), 4) !!}</p>
                                                 <div class="bg-light p-3 border">
                                                     <p class="mb-0">
                                                         <span class="fw-bolder"><i class="fa fa-map-marker"></i></span>
