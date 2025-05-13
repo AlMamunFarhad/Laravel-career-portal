@@ -1,5 +1,5 @@
 @extends('front_page.layouts.app')
-
+{{-- Registration --}}
 @section('main')
     <section class="section-5">
         <div class="container my-5">
@@ -47,56 +47,18 @@
 
 @push('scripts')
     <script>
+        // Register form validation
         $("#registerForm").submit(function(e) {
             e.preventDefault();
-
             $.ajax({
                 url: '{{ route('account.processRegister') }}',
                 type: 'post',
                 data: $("#registerForm").serializeArray(),
                 dataType: 'json',
                 success: function(response) {
-                    // if(response.status === false){
-                    //     let errors = response.errors;
-                    //     if(errors.name){
-                    //         $("#name").addClass('is-invalid')
-                    //         .siblings('p').addClass('invalid-feedback').html(errors.name)
-                    //     }else{
-                    //         $("#name").removeClass('is-invalid')
-                    //         .siblings('p').removeClass('invalid-feedback').html('')
-                    //     }
-                    // }
-                    // let errors = response.errors;
-                    // let fields = ["name", "email", "password", "confirm_password"];
-                    // if (response.status === false) {
-                    //     fields.forEach(field => {
-                    //         if (errors[field]) {
-                    //             $("#" + field).addClass('is-invalid')
-                    //                 .siblings('p').addClass('invalid-feedback').html(errors[
-                    //                     field]);
-                    //         } else {
-                    //             $("#" + field).removeClass('is-invalid')
-                    //                 .siblings('p').removeClass('invalid-feedback').html('');
-                    //         }
-                    //     });
-                    // } else {
-                    //     fields.forEach(field => {
-                    //         if (errors[field]) {
-                    //             $("#" + field).removeClass('is-invalid')
-                    //                 .siblings('p').removeClass('invalid-feedback').html(errors[
-                    //                     field]);
-                    //         } else {
-                    //             $("#" + field).removeClass('is-invalid')
-                    //                 .siblings('p').removeClass('invalid-feedback').html('');
-                    //         }
-                    //     });
-                    // }
-
-
                     let errors = response.errors;
                     let fields = ["name", "email", "password", "confirm_password"];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')
@@ -107,14 +69,11 @@
                                 .siblings('p').removeClass('invalid-feedback').html('');
                         }
                     });
-
                     if (!hasError) {
                         window.location.href = "{{ route('account.login') }}";
                     }
-
                 }
             });
-
         });
     </script>
 @endpush

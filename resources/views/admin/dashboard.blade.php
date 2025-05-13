@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- User Dashboard --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -32,5 +31,3 @@
         </div>
     </section>
 @endsection
-@push('scripts')
-@endpush

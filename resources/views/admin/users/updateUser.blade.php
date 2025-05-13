@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Update User --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -45,7 +44,7 @@
                                     <label for="" class="mb-2">Mobile</label>
                                     <input type="text" placeholder="Mobile" class="form-control" name="mobile"
                                         id="mobile" value="{{ $updateUser->mobile }}">
-                                        <p></p>
+                                    <p></p>
                                 </div>
                             </div>
                             <div class="card-footer  p-4">
@@ -58,23 +57,20 @@
         </div>
     </section>
 @endsection
-
 @push('scripts')
     <script>
+        // Update User
         $("#userUpdateForm").submit(function(e) {
             e.preventDefault();
-
             $.ajax({
-                url: '{{ route("admin.user.update", $updateUser->id) }}',
+                url: '{{ route('admin.user.update', $updateUser->id) }}',
                 type: 'put',
                 dataType: 'json',
                 data: $("#userUpdateForm").serializeArray(),
                 success: function(response) {
-
                     let errors = response.errors;
-                    let fields = ["name", "email","mobile"];
+                    let fields = ["name", "email", "mobile"];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')
@@ -85,14 +81,11 @@
                                 .siblings('p').removeClass('invalid-feedback').html('');
                         }
                     });
-
                     if (!hasError) {
                         window.location.href = "{{ route('admin.users') }}";
                     }
                 }
-
             });
         });
-
     </script>
 @endpush

@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Update Job --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -106,8 +105,6 @@
                                             </label>
                                         </div>
                                     </div>
-
-
                                 </div>
                                 <div class="mb-4">
                                     <label for="description" class="mb-2">Description<span
@@ -175,7 +172,6 @@
                                             value="{{ $updateJob->company_name }}">
                                         <p></p>
                                     </div>
-
                                     <div class="mb-4 col-md-6">
                                         <label for="company_location" class="mb-2">Location</label>
                                         <input type="text" placeholder="Location" id="company_location"
@@ -200,9 +196,9 @@
         </div>
     </section>
 @endsection
-
 @push('scripts')
     <script>
+        // Edit Job form validation
         $("#editJobForm").submit(function(e) {
             e.preventDefault();
             $("button[type='submit']").prop('disabled', true);
@@ -219,7 +215,6 @@
                         'companyName'
                     ];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')

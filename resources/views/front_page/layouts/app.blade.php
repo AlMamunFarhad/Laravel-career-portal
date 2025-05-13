@@ -45,8 +45,8 @@
                             type="submit">Login</a>
                     @else
                         @if (Auth::user()->role == 'admin')
-                        <a class="btn btn-outline-primary me-2" href="{{ route('admin.dashboard') }}"
-                        type="submit">Admin</a>
+                            <a class="btn btn-outline-primary me-2" href="{{ route('admin.dashboard') }}"
+                                type="submit">Admin</a>
                         @endif
                         <a class="btn btn-outline-primary me-2" href="{{ route('account.profile') }}"
                             type="submit">Profile</a>
@@ -58,7 +58,6 @@
         </nav>
     </header>
     @yield('main')
-
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -82,13 +81,11 @@
             </div>
         </div>
     </div>
-
     <footer class="bg-dark py-3 bg-2">
         <div class="container">
             <p class="text-center text-white pt-3 fw-bold fs-6">© 2023 xyz company, all right reserved</p>
         </div>
     </footer>
-
     <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
     <script src="{{ asset('assets/js/instantpages.5.1.0.min.js') }}"></script>
@@ -98,14 +95,13 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script>
-		$('.editor').trumbowyg();
+        $('.editor').trumbowyg();
 
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
         $("#profilePicForm").submit(function(e) {
             e.preventDefault();
 
@@ -131,10 +127,7 @@
             });
         })
     </script>
-
-
     @stack('scripts')
-
 </body>
 
 </html>

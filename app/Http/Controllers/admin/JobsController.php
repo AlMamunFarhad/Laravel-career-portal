@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class JobsController extends Controller
 {
+    // Show all jobs
     public function index()
     {
         $jobs = Job::orderByDesc('created_at')->with('user', 'applicationsCount')->paginate(10);
@@ -19,21 +20,19 @@ class JobsController extends Controller
             'jobs' => $jobs
         ]);
     }
-
+    // Show edit job page
     public function edit(string $id)
     {
-
         $updateJob = Job::find($id);
         $categories = Category::orderBy('name', 'ASC')->get();
         $jobTypes = JobType::orderBy('name', 'ASC')->get();
-
         return view('admin.jobs.update', [
-            'updateJob' => $updateJob, 
-            'categories' => $categories, 
-            'jobTypes' => $jobTypes 
+            'updateJob' => $updateJob,
+            'categories' => $categories,
+            'jobTypes' => $jobTypes
         ]);
     }
-
+    // Update job
     public function update(Request $request, $id)
     {
         $rules = [
@@ -46,7 +45,6 @@ class JobsController extends Controller
             'experience' => 'required',
             'companyName' => 'required|min:3|max:100',
         ];
-
         $validator = validator::make($request->all(), $rules);
         $updateJob =  Job::find($id);
         if ($validator->passes()) {
@@ -68,11 +66,8 @@ class JobsController extends Controller
                 'company_website' => $request->website,
                 'status' => $request->status,
                 'isFeatured' => (!empty($request->isFeatured)) ? $request->isFeatured : 0,
-
             ]);
-
             session()->flash('success', 'Job updated Successfully.');
-
             return response()->json([
                 'status' => true,
                 'errors' => [],
@@ -84,13 +79,11 @@ class JobsController extends Controller
             ]);
         }
     }
-
+    // Delete job 
     public function destroy(Request $request)
     {
         $id = $request->id;
-
         $job = Job::findOrFail($id);
-
         if ($job == null) {
             session()->flash('error', 'Job is not found.');
             return response()->json([

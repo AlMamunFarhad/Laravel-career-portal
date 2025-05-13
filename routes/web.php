@@ -9,6 +9,7 @@ use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\JobsController;
 use App\Http\Controllers\admin\JobApplicationsController;
 
+// Frontend Route
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
 Route::get('/job/detail/{id}', [JobController::class, 'jobDetail'])->name('jobDetail');
@@ -19,8 +20,8 @@ Route::post('/process/forgot/password', [AccountController::class, 'processForgo
 Route::get('/reset/password/{token}', [AccountController::class, 'resetPassword'])->name('account.resetPassword');
 Route::post('/process/reset/password', [AccountController::class, 'processResetPassword'])->name('account.processResetPassword');
 
-
-Route::group(['prefix' => 'admin', 'middleware' => 'checkRole'], function(){
+Route::group(['prefix' => 'admin', 'middleware' => 'checkRole'], function () {
+    // Admin Route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/edit/user/{id}', [UserController::class, 'edit'])->name('admin.user.edit');
@@ -35,7 +36,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkRole'], function(){
 });
 
 Route::group(['prefix' => 'account'], function () {
-
     // Guest Route
     Route::group(['middleware' => 'guest'], function () {
         Route::get('/register',  [AccountController::class, 'registration'])->name('account.register');

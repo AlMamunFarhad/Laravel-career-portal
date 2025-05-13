@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Jobs List --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -14,7 +13,6 @@
                     </nav>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-lg-3">
                     @include('admin.sidebar')
@@ -99,6 +97,7 @@
 @endsection
 @push('scripts')
     <script>
+        // Delete Job
         function deleteJob(id){
         if (confirm('Are you sure you want to delete?')) {
             $.ajax({
@@ -112,6 +111,5 @@
             });
         }
         }
-
     </script>
 @endpush

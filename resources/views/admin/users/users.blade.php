@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Users --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -14,7 +13,6 @@
                     </nav>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-lg-3">
                     @include('admin.sidebar')
@@ -88,22 +86,21 @@
 @endsection
 @push('scripts')
     <script>
-      
+        //   Delete User
         function deleteUser(id) {
-            if(confirm('Are you sure you want to delete?')){
-            $.ajax({
-                url: "{{ route('admin.user.delete', $user->id) }}",
-                type: 'delete',
-                data: {
-                    id: id
-                },
-                dataType: 'json',
-                success: function() {
-                  window.location.href = "{{ route('admin.users') }}";
-                }
-            });
+            if (confirm('Are you sure you want to delete?')) {
+                $.ajax({
+                    url: "{{ route('admin.user.delete', $user->id) }}",
+                    type: 'delete',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function() {
+                        window.location.href = "{{ route('admin.users') }}";
+                    }
+                });
+            }
         }
-        }
-  
     </script>
 @endpush

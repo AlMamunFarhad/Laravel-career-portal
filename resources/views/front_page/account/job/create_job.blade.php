@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Create Job --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -63,7 +62,6 @@
                                         <p class="text-danger"></p>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="mb-4 col-md-6">
                                         <label for="salary" class="mb-2">Salary</label>
@@ -71,7 +69,6 @@
                                             class="form-control" value="{{ old('salary') }}">
                                         <p class="text-danger"></p>
                                     </div>
-
                                     <div class="mb-4 col-md-6">
                                         <label for="location" class="mb-2">Location<span class="req">*</span></label>
                                         <input type="text" placeholder="location" id="location" name="location"
@@ -151,15 +148,14 @@
                             </div>
                     </form>
                 </div>
-
             </div>
         </div>
         </div>
     </section>
 @endsection
-
 @push('scripts')
     <script>
+        // Create Job 
         $("#createJobForm").submit(function(e) {
             e.preventDefault();
             $("button[type='submit']").prop('disabled', true);
@@ -176,7 +172,6 @@
                         'companyName'
                     ];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')
@@ -187,7 +182,6 @@
                                 .siblings('p').removeClass('invalid-feedback').html('');
                         }
                     });
-
                     if (!hasError) {
                         window.location.href = "{{ route('account.myJobs') }}";
                     }

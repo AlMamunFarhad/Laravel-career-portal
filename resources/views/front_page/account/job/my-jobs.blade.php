@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- My Jobs --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -19,7 +18,7 @@
                     @include('front_page.account.sidebar')
                 </div>
                 <div class="col-lg-9">
-                    @include('front_page.userMessages')        
+                    @include('front_page.userMessages')
                     <div class="card border-0 shadow mb-4 p-3">
                         <div class="card-body card-form">
                             <div class="d-flex justify-content-between">
@@ -29,7 +28,6 @@
                                 <div style="margin-top: -10px;">
                                     <a href="{{ route('account.createJob') }}" class="btn btn-primary">Post a Job</a>
                                 </div>
-
                             </div>
                             <div class="table-responsive">
                                 <table class="table ">
@@ -62,14 +60,16 @@
                                                             <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li><a class="dropdown-item" href="{{ route('jobDetail', $data->id) }}"> <i
+                                                            <li><a class="dropdown-item"
+                                                                    href="{{ route('jobDetail', $data->id) }}"> <i
                                                                         class="fa fa-eye" aria-hidden="true"></i> View</a>
                                                             </li>
                                                             <li><a class="dropdown-item"
                                                                     href="{{ route('account.editJob', $data->id) }}"><i
                                                                         class="fa fa-edit" aria-hidden="true"></i> Edit</a>
                                                             </li>
-                                                            <li><a class="dropdown-item" href="#" onclick="deleteJob({{ $data->id }})"><i
+                                                            <li><a class="dropdown-item" href="#"
+                                                                    onclick="deleteJob({{ $data->id }})"><i
                                                                         class="fa fa-trash" aria-hidden="true"></i>
                                                                     Remove</a></li>
                                                         </ul>
@@ -90,22 +90,22 @@
         </div>
     </section>
 @endsection
-
-
-
 @push('scripts')
     <script>
+        // Delete Job
         function deleteJob(job_id) {
             if (confirm("Are you sure you want to delete?")) {
-              $.ajax({
-                  url: "{{ route('account.deleteJob') }}",
-                  type: 'POST',
-                  data: {job_id: job_id},
-                  dataType: 'json',
-                  success: function(response){
-                    window.location.href = "{{ route('account.myJobs') }}";
-                  }
-              });
+                $.ajax({
+                    url: "{{ route('account.deleteJob') }}",
+                    type: 'POST',
+                    data: {
+                        job_id: job_id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        window.location.href = "{{ route('account.myJobs') }}";
+                    }
+                });
             }
         }
     </script>

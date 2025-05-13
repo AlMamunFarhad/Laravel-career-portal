@@ -1,7 +1,6 @@
 @extends('front_page.layouts.app')
-
-
 @section('main')
+    {{-- Job Details --}}
     <section class="section-4 bg-2">
         <div class="container pt-5">
             <div class="row">
@@ -23,7 +22,6 @@
                         <div class="job_details_header">
                             <div class="single_jobs white-bg d-flex justify-content-between">
                                 <div class="jobs_left d-flex align-items-center">
-
                                     <div class="jobs_conetent">
                                         <a href="#">
                                             <h4>{{ $job->title }}</h4>
@@ -92,25 +90,25 @@
                     {{-- Applicants Card --}}
                     @if (Auth::user())
                         @if (Auth::user()->id == $job->user_id)
-                          @if ($appliedUsers->isNotEmpty())
-                            <div class="card shadow border-0 mt-4">
-                                <div class="job_details_header">
-                                    <div class="single_jobs white-bg d-flex justify-content-between">
-                                        <div class="jobs_left d-flex align-items-center">
-                                            <div class="jobs_conetent">
-                                                <h4>Applicants</h4>
+                            @if ($appliedUsers->isNotEmpty())
+                                <div class="card shadow border-0 mt-4">
+                                    <div class="job_details_header">
+                                        <div class="single_jobs white-bg d-flex justify-content-between">
+                                            <div class="jobs_left d-flex align-items-center">
+                                                <div class="jobs_conetent">
+                                                    <h4>Applicants</h4>
+                                                </div>
                                             </div>
+                                            <div class="jobs_right"></div>
                                         </div>
-                                        <div class="jobs_right"></div>
                                     </div>
-                                </div>
-                                <div class="descript_wrap white-bg">
-                                    <table class="table table-hover">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Applied Date</th>
-                                        </tr>                                 
+                                    <div class="descript_wrap white-bg">
+                                        <table class="table table-hover">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Applied Date</th>
+                                            </tr>
                                             @foreach ($appliedUsers as $appliedUser)
                                                 <tr>
                                                     <td>{{ $appliedUser->user->name }}</td>
@@ -119,11 +117,11 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                    </table>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         @endif
-                    @endif
                     @endif
                 </div>
                 <div class="col-md-4">
@@ -172,9 +170,9 @@
         </div>
     </section>
 @endsection
-
 @push('scripts')
     <script type="text/javascript">
+        // Apply for Job
         function applyJob(id) {
             if (confirm('Are you sure you want to apply on this job?')) {
                 $.ajax({
@@ -190,7 +188,7 @@
                 });
             }
         }
-
+        // Save Job
         function saveJob(id) {
             $.ajax({
                 url: '{{ route('saveJob') }}',

@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Update Job --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -36,7 +35,8 @@
                                             <option value="">Select a Category</option>
                                             @if ($categories->isNotEmpty())
                                                 @foreach ($categories as $category)
-                                                    <option {{ ($editJob->category_id == $category->id) ? 'selected' : ''}} value="{{ $category->id }}">{{ $category->name }}</option>
+                                                    <option {{ $editJob->category_id == $category->id ? 'selected' : '' }}
+                                                        value="{{ $category->id }}">{{ $category->name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
@@ -50,7 +50,8 @@
                                             <option value="">Select a Job Type</option>
                                             @if ($jobTypes->isNotEmpty())
                                                 @foreach ($jobTypes as $jobType)
-                                                    <option {{ ($editJob->job_type_id == $jobType->id) ? 'selected' : ''}} value="{{ $jobType->id }}">{{ $jobType->name }}</option>
+                                                    <option {{ $editJob->job_type_id == $jobType->id ? 'selected' : '' }}
+                                                        value="{{ $jobType->id }}">{{ $jobType->name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
@@ -87,7 +88,8 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="benefits" class="mb-2">Benefits</label>
-                                    <textarea class="form-control editor" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits">{{ $editJob->benefits }}</textarea>
+                                    <textarea class="form-control editor" name="benefits" id="benefits" cols="5" rows="5"
+                                        placeholder="Benefits">{{ $editJob->benefits }}</textarea>
                                 </div>
                                 <div class="mb-4">
                                     <label for="responsibility" class="mb-2">Responsibility</label>
@@ -104,16 +106,26 @@
                                         <label for="experience" class="mb-2">Experience<span
                                                 class="req">*</span></label>
                                         <select class="form-select" name="experience" id="experience">
-                                            <option value="1" {{ ($editJob->experience == 1) ? 'selected' : '' }}>1 Year</option>
-                                            <option value="2" {{ ($editJob->experience == 2) ? 'selected' : '' }}>2 Years</option>
-                                            <option value="3" {{ ($editJob->experience == 3) ? 'selected' : '' }}>3 Years</option>
-                                            <option value="4" {{ ($editJob->experience == 4) ? 'selected' : '' }}>4 Years</option>
-                                            <option value="5" {{ ($editJob->experience == 5) ? 'selected' : '' }}>5 Years</option>
-                                            <option value="6" {{ ($editJob->experience == 6) ? 'selected' : '' }}>6 Years</option>
-                                            <option value="7" {{ ($editJob->experience == 7) ? 'selected' : '' }}>7 Years</option>
-                                            <option value="8" {{ ($editJob->experience == 8) ? 'selected' : '' }}>8 Years</option>
-                                            <option value="9" {{ ($editJob->experience == 9) ? 'selected' : '' }}>9 Years</option>
-                                            <option value="10" {{ ($editJob->experience == 10) ? 'selected' : '' }}>10+ Years</option>
+                                            <option value="1" {{ $editJob->experience == 1 ? 'selected' : '' }}>1
+                                                Year</option>
+                                            <option value="2" {{ $editJob->experience == 2 ? 'selected' : '' }}>2
+                                                Years</option>
+                                            <option value="3" {{ $editJob->experience == 3 ? 'selected' : '' }}>3
+                                                Years</option>
+                                            <option value="4" {{ $editJob->experience == 4 ? 'selected' : '' }}>4
+                                                Years</option>
+                                            <option value="5" {{ $editJob->experience == 5 ? 'selected' : '' }}>5
+                                                Years</option>
+                                            <option value="6" {{ $editJob->experience == 6 ? 'selected' : '' }}>6
+                                                Years</option>
+                                            <option value="7" {{ $editJob->experience == 7 ? 'selected' : '' }}>7
+                                                Years</option>
+                                            <option value="8" {{ $editJob->experience == 8 ? 'selected' : '' }}>8
+                                                Years</option>
+                                            <option value="9" {{ $editJob->experience == 9 ? 'selected' : '' }}>9
+                                                Years</option>
+                                            <option value="10" {{ $editJob->experience == 10 ? 'selected' : '' }}>
+                                                10+ Years</option>
                                         </select>
                                         <p class="text-danger"></p>
                                     </div>
@@ -129,14 +141,16 @@
                                         <label for="company_name" class="mb-2">Name<span
                                                 class="req">*</span></label>
                                         <input type="text" placeholder="Company Name" id="companyName"
-                                            name="companyName" class="form-control" value="{{ $editJob->company_name }}">
+                                            name="companyName" class="form-control"
+                                            value="{{ $editJob->company_name }}">
                                         <p class="text-danger"></p>
                                     </div>
 
                                     <div class="mb-4 col-md-6">
                                         <label for="company_location" class="mb-2">Location</label>
                                         <input type="text" placeholder="Location" id="company_location"
-                                            name="company_location" class="form-control" value="{{ $editJob->company_location }}">
+                                            name="company_location" class="form-control"
+                                            value="{{ $editJob->company_location }}">
                                     </div>
                                 </div>
                                 <div class="mb-4">
@@ -150,7 +164,6 @@
                             </div>
                     </form>
                 </div>
-
             </div>
         </div>
         </div>
@@ -175,7 +188,6 @@
                         'companyName'
                     ];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')
@@ -186,7 +198,6 @@
                                 .siblings('p').removeClass('invalid-feedback').html('');
                         }
                     });
-
                     if (!hasError) {
                         window.location.href = "{{ route('account.myJobs') }}";
                     }

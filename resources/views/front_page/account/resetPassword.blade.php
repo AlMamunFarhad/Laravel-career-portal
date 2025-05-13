@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Reset Password --}}
 @section('main')
     <section class="section-5">
         <div class="container my-5">

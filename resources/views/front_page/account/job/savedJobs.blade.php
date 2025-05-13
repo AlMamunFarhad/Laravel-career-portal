@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Saved Jobs --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">

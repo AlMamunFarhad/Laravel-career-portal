@@ -1,6 +1,5 @@
 @extends('front_page.layouts.app')
-
-
+{{-- Profile Page --}}
 @section('main')
     <section class="section-5 bg-2">
         <div class="container py-5">
@@ -54,51 +53,51 @@
                     </form>
                     <div class="card border-0 shadow mb-4">
                         <form action="" method="POST" name="changePasswordForm" id="changePasswordForm">
-                        <div class="card-body p-4">
-                            <h3 class="fs-4 mb-1">Change Password</h3>
-                            <div class="mb-4">
-                                <label for="" class="mb-2">Old Password*</label>
-                                <input type="password" name="old_password" id="old_password" placeholder="Old Password" class="form-control">
-                                <p></p>
+                            <div class="card-body p-4">
+                                <h3 class="fs-4 mb-1">Change Password</h3>
+                                <div class="mb-4">
+                                    <label for="" class="mb-2">Old Password*</label>
+                                    <input type="password" name="old_password" id="old_password" placeholder="Old Password"
+                                        class="form-control">
+                                    <p></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="" class="mb-2">New Password*</label>
+                                    <input type="password" name="new_password" id="new_password" placeholder="New Password"
+                                        class="form-control">
+                                    <p></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="" class="mb-2">Confirm Password*</label>
+                                    <input type="password" name="confirm_password" id="confirm_password"
+                                        placeholder="Confirm Password" class="form-control">
+                                    <p></p>
+                                </div>
                             </div>
-                            <div class="mb-4">
-                                <label for="" class="mb-2">New Password*</label>
-                                <input type="password" name="new_password" id="new_password" placeholder="New Password" class="form-control">
-                                <p></p>
+                            <div class="card-footer  p-4">
+                                <button type="submit" class="btn btn-primary">Update</button>
                             </div>
-                            <div class="mb-4">
-                                <label for="" class="mb-2">Confirm Password*</label>
-                                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" class="form-control">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="card-footer  p-4">
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        </div>
-                    </form>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 @endsection
-
 @push('scripts')
     <script>
+        // Update Profile
         $("#profileForm").submit(function(e) {
             e.preventDefault();
-
             $.ajax({
-                url: '{{ route("account.updateProfile") }}',
+                url: '{{ route('account.updateProfile') }}',
                 type: 'put',
                 dataType: 'json',
                 data: $("#profileForm").serializeArray(),
                 success: function(response) {
-
                     let errors = response.errors;
                     let fields = ["name", "email"];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')
@@ -109,29 +108,24 @@
                                 .siblings('p').removeClass('invalid-feedback').html('');
                         }
                     });
-
                     if (!hasError) {
                         window.location.href = "{{ route('account.profile') }}";
                     }
                 }
-
             });
         });
-
+        // Change Password
         $("#changePasswordForm").submit(function(e) {
             e.preventDefault();
-
             $.ajax({
-                url: '{{ route("account.updatePassword") }}',
+                url: '{{ route('account.updatePassword') }}',
                 type: 'post',
                 dataType: 'json',
                 data: $("#changePasswordForm").serializeArray(),
                 success: function(response) {
-
                     let errors = response.errors;
                     let fields = ["old_password", "new_password", "confirm_password"];
                     let hasError = false;
-
                     fields.forEach(field => {
                         if (response.status === false && errors[field]) {
                             $("#" + field).addClass('is-invalid')
@@ -142,12 +136,10 @@
                                 .siblings('p').removeClass('invalid-feedback').html('');
                         }
                     });
-
                     if (!hasError) {
                         window.location.href = "{{ route('account.profile') }}";
                     }
                 }
-
             });
         });
     </script>
