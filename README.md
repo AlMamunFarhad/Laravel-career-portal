@@ -58,7 +58,7 @@
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/your-username/laravel-career-portal.git
+   git clone https://github.com/AlMamunFarhad/laravel-career-portal.git
    ```
 
 2. **Navigate to the project folder**
